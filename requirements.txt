@@ -1,7 +1,5 @@
 streamlit>=1.32.0
 transformers>=4.40.0
 torch>=2.3.0
-peft>=0.11.0
 accelerate>=0.29.0
-bitsandbytes>=0.43.0  # Required for 4-bit loading
-sentencepiece
+bitsandbytes>=0.43.0
