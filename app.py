@@ -1,16 +1,14 @@
 import streamlit as st
-from transformers import AutoTokenizer, pipeline
-import torch
+from transformers import pipeline
 
-# Ultra-lightweight version (no full model loading)
 @st.cache_resource
 def load_generator():
     return pipeline(
         "text-generation",
         model="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
-        torch_dtype=torch.float16,
         device_map="auto",
-        model_kwargs={"load_in_4bit": True}  # Critical for memory
+        torch_dtype=torch.float16,  # 16-bit instead of 4-bit
+        model_kwargs={"load_in_8bit": True}  # Modified this line
     )
 
 st.title("🚀 Sci-Fi Story Generator")
