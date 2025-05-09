@@ -13,7 +13,7 @@ st.set_page_config(
 st.markdown("""
     <style>
         .stApp {
-            background-image: url('https://www.pexels.com/photo/blue-universe-956981/');
+            background-image: url('https://i.pinimg.com/originals/63/33/87/6333874420517570f5a1e4a0388a4a8e.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -40,6 +40,10 @@ st.markdown("""
             margin-top: 1rem;
             text-decoration: none;
         }
+        .stTextInput>div>div>input {
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -56,7 +60,15 @@ if st.button("Generate Story"):
         st.warning("Please enter a prompt.")
     else:
         story = f"""
-        In a distant quadrant of the Andromeda galaxy, {user_prompt} became the catalyst for humanity’s greatest leap...
+        In a distant quadrant of the Andromeda galaxy, {user_prompt} became the catalyst for humanity's greatest leap...
+        
+        The quantum anomaly pulsed with an eerie blue light as Captain Vex approached. What began as a routine survey mission
+        had uncovered something beyond human comprehension. The device - if it could be called that - seemed to respond to
+        {user_prompt.lower()}, vibrating with increasing intensity.
+        
+        "Commander," Lieutenant Zara's voice crackled over the comm, "the energy readings are off the charts! It's like nothing
+        we've ever--" Her transmission cut abruptly as space itself seemed to fold around them...
+        
         (✨ Your model-generated story would continue here ✨)
         """
         st.markdown(f"<div class='story-box'><pre>{story.strip()}</pre></div>", unsafe_allow_html=True)
