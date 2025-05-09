@@ -14,7 +14,7 @@ if st.session_state.story:
     st.markdown(
         f"""
         <div style='background-color:#111;padding:1em;border-radius:10px;
-                    max-height:400px;overflow-y:scroll;color:white;margin-bottom:1em;'>
+                    max-height:400px;overflow-y:auto;color:white;margin-bottom:1em;'>
             {st.session_state.story.replace('\n', '<br>')}
         </div>
         """,
@@ -39,13 +39,11 @@ Reality pulsed. The universe blinked.
 """
             st.session_state.story = new_story.strip()
             st.session_state.mode = 'post_gen'
-            st.experimental_rerun()
 
 # --- After First Generation: Offer to Continue ---
 elif st.session_state.mode == 'post_gen':
     if st.button("Continue the story?"):
         st.session_state.mode = 'continue'
-        st.experimental_rerun()
 
 # --- Continue Prompt Input ---
 elif st.session_state.mode == 'continue':
@@ -63,4 +61,3 @@ A shimmering gate opened. The crew stepped through... unaware of what waited bey
 """
             st.session_state.story += f"\n\n{more_text.strip()}"
             st.session_state.mode = 'post_gen'
-            st.experimental_rerun()
