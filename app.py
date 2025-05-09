@@ -60,7 +60,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Session State Setup ---
+# --- Session State ---
 if 'story' not in st.session_state:
     st.session_state.story = ""
 if 'phase' not in st.session_state:
@@ -70,10 +70,10 @@ if 'phase' not in st.session_state:
 st.title("🚀 Cosmic Story Generator")
 st.markdown("<p class='subtitle'>Create your own sci-fi adventure</p>", unsafe_allow_html=True)
 
-# --- PHASE: Start ---
+# --- PHASE: Start (Initial Input) ---
 if st.session_state.phase == 'start':
-    prompt = st.text_input("Enter your sci-fi premise:", placeholder="e.g. 'An AI awakens on a generation ship'", key='initial_input')
-    if st.button("Generate Story"):
+    prompt = st.text_input("Enter your sci-fi premise:", placeholder="e.g. 'An AI awakens on a generation ship'", key='initial_prompt')
+    if st.button("Generate Story", key='gen_btn_1'):
         if prompt.strip():
             st.session_state.story = f"""
             **Stardate {datetime.now().strftime('%Y%m%d')}**
@@ -87,40 +87,11 @@ if st.session_state.phase == 'start':
             """
             st.session_state.phase = 'generated'
 
-# --- PHASE: Generated ---
-if st.session_state.phase == 'generated':
+# --- PHASE: Generated or Continued ---
+if st.session_state.phase in ['generated', 'continued']:
     st.markdown(f"<div class='story-box'>{st.session_state.story.strip()}</div>", unsafe_allow_html=True)
 
-    # Download option
+    # Download button
     b64 = base64.b64encode(st.session_state.story.encode()).decode()
     st.markdown(
-        f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
-        unsafe_allow_html=True
-    )
-
-    st.write("Do you want to continue the story?")
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("Yes"):
-            st.session_state.phase = 'continue'
-    with col2:
-        if st.button("No"):
-            st.session_state.phase = 'start'
-            st.session_state.story = ""
-
-# --- PHASE: Continue (append to story) ---
-if st.session_state.phase == 'continue':
-    st.markdown(f"<div class='story-box'>{st.session_state.story.strip()}</div>", unsafe_allow_html=True)
-
-    continuation = st.text_input("Continue the adventure:", placeholder="What happens next?", key='cont_input')
-    if st.button("Generate Story"):
-        if continuation.strip():
-            new_chunk = f"""
-
-            *{datetime.now().strftime('%H:%M')} hrs, Deep Space*
-
-            {continuation.strip()}
-
-            "Captain," Vega whispered again, "it's not over. Something... or someone... is still out there."
-            """
-            st.session_state.story += new_chunk
+        f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt"_
