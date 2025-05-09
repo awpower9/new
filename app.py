@@ -74,9 +74,11 @@ if 'story' not in st.session_state:
     st.session_state.story = ""
 if 'prompt' not in st.session_state:
     st.session_state.prompt = ""
+if 'generated' not in st.session_state:
+    st.session_state.generated = False
 
-# Input prompt (same as before, visible only if no story is generated yet)
-if not st.session_state.story:
+# Input prompt (visible only if no story is generated yet)
+if not st.session_state.generated:
     prompt = st.text_input(
         "Enter your sci-fi premise:", 
         value=st.session_state.prompt,
@@ -100,6 +102,7 @@ if st.button("Generate Story") and prompt.strip():
         "The threshold has been crossed."
         """
         st.session_state.prompt = prompt  # Save the prompt to session state
+        st.session_state.generated = True  # Mark the story as generated
 
 # Display the story if it exists
 if st.session_state.story:
@@ -128,3 +131,11 @@ if st.session_state.story:
             st.session_state.story += f"\n\n{continuation.strip()}"
             st.session_state.prompt = continuation.strip()  # Update the prompt for future continuation
 
+    # "Generate New Story" button (replace "Continue" with "Generate New Story" after first generation)
+    if st.session_state.generated:
+        generate_new_button = st.button("Generate New Story")
+        if generate_new_button:
+            # Reset everything for a new story generation
+            st.session_state.story = ""
+            st.session_state.prompt = ""
+            st.session_state.generated = False
