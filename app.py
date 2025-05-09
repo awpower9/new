@@ -2,9 +2,14 @@ import streamlit as st
 from datetime import datetime
 import base64
 
-st.set_page_config(page_title="Cosmic Story Generator", page_icon="🚀", layout="centered")
+# --- Page Config ---
+st.set_page_config(
+    page_title="Cosmic Story Generator",
+    page_icon="🚀",
+    layout="centered"
+)
 
-# --- CSS ---
+# --- Custom CSS ---
 st.markdown("""
     <style>
         .stApp {
@@ -60,38 +65,71 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Session State ---
+# --- Initialize Session State ---
 if 'story' not in st.session_state:
     st.session_state.story = ""
-if 'phase' not in st.session_state:
-    st.session_state.phase = 'start'
+if 'mode' not in st.session_state:
+    st.session_state.mode = 'input'  # 'input', 'post_gen', 'continue'
 
-# --- Header ---
+# --- Title & Subtitle ---
 st.title("🚀 Cosmic Story Generator")
 st.markdown("<p class='subtitle'>Create your own sci-fi adventure</p>", unsafe_allow_html=True)
 
-# --- PHASE: Start (Initial Input) ---
-if st.session_state.phase == 'start':
-    prompt = st.text_input("Enter your sci-fi premise:", placeholder="e.g. 'An AI awakens on a generation ship'", key='initial_prompt')
-    if st.button("Generate Story", key='gen_btn_1'):
-        if prompt.strip():
-            st.session_state.story = f"""
+# --- Show story if any ---
+if st.session_state.story:
+    st.markdown(f"<div class='story-box'>{st.session_state.story.strip()}</div>", unsafe_allow_html=True)
+
+# --- Input Mode ---
+if st.session_state.mode == 'input':
+    prompt = st.text_input("Enter your sci-fi premise:", placeholder="e.g. 'An AI awakens on a generation ship'", key="initial_prompt")
+    if st.button("Generate Story", key="gen1"):
+        if not prompt.strip():
+            st.warning("Please enter a sci-fi premise")
+        else:
+            story = f"""
             **Stardate {datetime.now().strftime('%Y%m%d')}**
 
             It began when {prompt.lower().rstrip('.')}. The starship's sensors detected anomalous readings near the {prompt.split(' ')[0]} sector.
 
             "Captain," Lt. Vega reported, "the quantum fluctuations are off the charts. It's like nothing we've seen before."
 
-            Then everything changed. The last transmission before communications failed was a single repeating message: 
+            Then everything changed. The last transmission before communications failed was a single repeating message:
             "The threshold has been crossed."
             """
-            st.session_state.phase = 'generated'
+            st.session_state.story += f"\n\n{story.strip()}"
+            st.session_state.mode = 'post_gen'
+            st.experimental_rerun()
 
-# --- PHASE: Generated or Continued ---
-if st.session_state.phase in ['generated', 'continued']:
-    st.markdown(f"<div class='story-box'>{st.session_state.story.strip()}</div>", unsafe_allow_html=True)
+# --- After Generation: Ask to Continue ---
+elif st.session_state.mode == 'post_gen':
+    if st.button("Continue Story?", key="ask_continue"):
+        st.session_state.mode = 'continue'
+        st.experimental_rerun()
 
-    # Download button
+# --- Continue Mode ---
+elif st.session_state.mode == 'continue':
+    prompt = st.text_input("Add your next input to continue the story:", key="continue_prompt")
+    if st.button("Generate Story", key="gen_continue"):
+        if not prompt.strip():
+            st.warning("Please enter something to continue the story.")
+        else:
+            story = f"""
+            **Stardate {datetime.now().strftime('%Y%m%d')}**
+
+            Building upon the events, {prompt.lower().rstrip('.')}. The ship's AI, now partially sentient, began interpreting the signals not as threats, but as a warning.
+
+            Deep within the neural networks, a message emerged: "Humanity must choose: evolve or perish."
+
+            The crew stared into the abyss of the unknown, knowing only one thing — the journey had just begun.
+            """
+            st.session_state.story += f"\n\n{story.strip()}"
+            st.session_state.mode = 'post_gen'
+            st.experimental_rerun()
+
+# --- Download Link ---
+if st.session_state.story:
     b64 = base64.b64encode(st.session_state.story.encode()).decode()
     st.markdown(
-        f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt"_
+        f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
+        unsafe_allow_html=True
+    )
