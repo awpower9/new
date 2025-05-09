@@ -101,7 +101,7 @@ if st.button("Generate Story"):
             """
             st.session_state.prompt = prompt  # Save the prompt to session state
 
-# Display the story
+# Display the story if it exists
 if st.session_state.story:
     st.markdown(f"<div class='story-box'>{st.session_state.story.strip()}</div>", unsafe_allow_html=True)
     
@@ -111,14 +111,18 @@ if st.session_state.story:
         f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
         unsafe_allow_html=True
     )
-
-# Buttons for "Continue the story" or "Generate another prompt"
-if st.button("Continue the story"):
-    # If they continue, you can append more content or allow for more interaction with the model
-    st.write("You can add more content to the current story here.")
     
-elif st.button("Generate another prompt"):
-    # Reset everything and start fresh
-    st.session_state.story = ""
-    st.session_state.prompt = ""
-    st.experimental_rerun()
+    # Show the Continue and New buttons after the story is generated
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        if st.button("Continue the story"):
+            # If they continue, you can append more content or allow for more interaction with the model
+            st.write("You can add more content to the current story here.")
+    
+    with col2:
+        if st.button("Generate another prompt"):
+            # Reset everything and start fresh
+            st.session_state.story = ""
+            st.session_state.prompt = ""
+            st.experimental_rerun()
