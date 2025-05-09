@@ -69,17 +69,27 @@ st.markdown("""
 st.title("🚀 Cosmic Story Generator")
 st.markdown("<p class='subtitle'>Create your own sci-fi adventure</p>", unsafe_allow_html=True)
 
+# Initialize session state variables if they don't exist
+if 'story' not in st.session_state:
+    st.session_state.story = ""
+if 'prompt' not in st.session_state:
+    st.session_state.prompt = ""
+
+# Input prompt
 prompt = st.text_input(
     "Enter your sci-fi premise:", 
+    value=st.session_state.prompt,
     placeholder="e.g. 'An AI awakens on a generation ship'"
 )
 
+# Generate story button
 if st.button("Generate Story"):
     if not prompt.strip():
         st.warning("Please enter a sci-fi premise")
     else:
         with st.spinner('Generating...'):
-            story = f"""
+            # Generate a new story based on the prompt
+            st.session_state.story = f"""
             **Stardate {datetime.now().strftime('%Y%m%d')}**
             
             It began when {prompt.lower().rstrip('.')}. The starship's sensors detected anomalous readings near the {prompt.split(' ')[0]} sector. 
@@ -89,19 +99,26 @@ if st.button("Generate Story"):
             Then everything changed. The last transmission before communications failed was a single repeating message: 
             "The threshold has been crossed."
             """
-            
-            st.markdown(f"<div class='story-box'>{story.strip()}</div>", unsafe_allow_html=True)
-            
-            # Download option
-            b64 = base64.b64encode(story.encode()).decode()
-            st.markdown(
-                f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
-                unsafe_allow_html=True
-            )
-            
-            # Ask if they want further prompts
-            if st.button("Continue the story"):
-                # You can call another function to generate more content based on the user's choice
-                st.write("You can add more content to the current story here.")
-            elif st.button("Generate another prompt"):
-                st.experimental_rerun()
+            st.session_state.prompt = prompt  # Save the prompt to session state
+
+# Display the story
+if st.session_state.story:
+    st.markdown(f"<div class='story-box'>{st.session_state.story.strip()}</div>", unsafe_allow_html=True)
+    
+    # Download option
+    b64 = base64.b64encode(st.session_state.story.encode()).decode()
+    st.markdown(
+        f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
+        unsafe_allow_html=True
+    )
+
+# Buttons for "Continue the story" or "Generate another prompt"
+if st.button("Continue the story"):
+    # If they continue, you can append more content or allow for more interaction with the model
+    st.write("You can add more content to the current story here.")
+    
+elif st.button("Generate another prompt"):
+    # Reset everything and start fresh
+    st.session_state.story = ""
+    st.session_state.prompt = ""
+    st.experimental_rerun()
