@@ -100,13 +100,8 @@ if st.button("Generate Story"):
             )
             
             # Ask if they want further prompts
-            further_prompt = st.radio(
-                "Would you like to continue the story or generate another prompt?",
-                ("Continue the story", "Generate another prompt", "No, thank you")
-            )
-            
-            if further_prompt == "Continue the story":
+            if st.button("Continue the story"):
                 # You can call another function to generate more content based on the user's choice
                 st.write("You can add more content to the current story here.")
-            elif further_prompt == "Generate another prompt":
+            elif st.button("Generate another prompt"):
                 st.experimental_rerun()
