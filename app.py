@@ -4,20 +4,19 @@ import base64
 
 # Set page config
 st.set_page_config(
-    page_title="SciFi Story Generator",
-    page_icon="🛸",
+    page_title="Sci-fi Story Generator",
+    page_icon="🌌",
     layout="centered"
 )
 
-# --- Custom CSS with Interstellar blackhole GIF background ---
+# --- Custom CSS with static Interstellar background ---
 st.markdown("""
     <style>
         .stApp {
             background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
-                        url('https://i.gifer.com/7RtZ.gif');
+                        url('https://wallpapercave.com/wp/wp9414530.jpg');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
             background-attachment: fixed;
             color: white;
             min-height: 100vh;
@@ -28,29 +27,31 @@ st.markdown("""
             padding: 2rem;
             margin: 0 auto;
             text-align: center;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.7);
             border-radius: 15px;
-            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
         }
         h1 {
             color: #00ffff;
-            text-shadow: 0 0 10px #00ffff, 0 0 20px #0066ff;
+            text-shadow: 0 0 10px #00ffff;
             font-family: 'Orbitron', sans-serif;
-            margin-bottom: 1.5rem;
-            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
         }
         .subtitle {
             font-size: 1.1rem;
             margin-bottom: 2rem;
             color: #aaaaaa;
+            font-style: italic;
         }
         .story-box {
-            background: rgba(10, 10, 30, 0.8);
+            background: rgba(10, 10, 30, 0.9);
             padding: 2rem;
             border-radius: 10px;
             margin: 2rem auto;
             border-left: 4px solid #00f7ff;
-            box-shadow: 0 0 20px rgba(0, 247, 255, 0.3);
+            box-shadow: 0 0 25px rgba(0, 247, 255, 0.2);
             color: #f0f0f0;
             line-height: 1.7;
             text-align: left;
@@ -70,29 +71,11 @@ st.markdown("""
             border-radius: 5px !important;
             padding: 10px 25px !important;
             margin: 1.5rem auto !important;
-            box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
             transition: all 0.3s ease !important;
         }
         .stButton>button:hover {
             transform: scale(1.05) !important;
-            box-shadow: 0 0 20px rgba(0, 247, 255, 0.8) !important;
-        }
-        .rocket-container {
-            position: relative;
-            height: 100px;
-            margin: 1rem 0;
-        }
-        .rocket {
-            font-size: 3rem;
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: blast-off 1.5s ease-out forwards;
-        }
-        @keyframes blast-off {
-            0% { transform: translate(-50%, 0) rotate(0deg); opacity: 1; }
-            100% { transform: translate(-50%, -100vh) rotate(10deg); opacity: 0; }
+            box-shadow: 0 0 15px rgba(0, 247, 255, 0.7) !important;
         }
         .save-button {
             background: linear-gradient(135deg, #00f7ff, #0066ff);
@@ -103,14 +86,17 @@ st.markdown("""
             border-radius: 5px;
             margin: 1.5rem auto;
             cursor: pointer;
-            transition: all 0.3s ease;
             display: inline-block;
-            box-shadow: 0 0 15px rgba(0, 247, 255, 0.5);
             text-decoration: none;
         }
-        .save-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 247, 255, 0.8);
+        .rocket-icon {
+            font-size: 2rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
     </style>
     <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet'>
@@ -120,9 +106,14 @@ st.markdown("""
 with st.container():
     st.markdown("<div class='main'>", unsafe_allow_html=True)
     
-    # Title
-    st.markdown("<h1>INTERSTELLAR STORY GENERATOR</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subtitle'>Warp through the event horizon of creativity</p>", unsafe_allow_html=True)
+    # Title with floating rocket
+    st.markdown("""
+        <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+            <h1>SCI-FI STORY GENERATOR</h1>
+            <div class="rocket-icon">🚀</div>
+        </div>
+    """, unsafe_allow_html=True)
+    st.markdown("<p class='subtitle'>\"We used to look up at the sky and wonder...\"</p>", unsafe_allow_html=True)
 
     # User Input
     user_prompt = st.text_input(
@@ -140,29 +131,24 @@ with st.container():
                 import time
                 time.sleep(2)
                 
-                # Rocket animation
-                st.markdown("""
-                <div class="rocket-container">
-                    <div class="rocket">🚀</div>
-                </div>
-                """, unsafe_allow_html=True)
-                
                 # Generated story
                 story = f"""
                 **// STELLAR LOG - TARS Recording //**
                 **Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}
                 **Location:** Near Gargantua Event Horizon
                 
-                It started when {user_prompt.lower().rstrip('.')}. Cooper initially dismissed it as another anomaly, 
-                but when the quantum fluctuations matched Murph's childhood bedroom patterns, we knew this was different.
+                It started when {user_prompt.lower().rstrip('.')}. Cooper initially dismissed it as instrument error, 
+                but when the quantum fluctuations matched the gravitational anomalies from Miller's planet, 
+                we knew this was different.
                 
-                "TARS, analyze the gravitational waves," Cooper commanded, his voice tense.
+                "TARS, set humor to 75% and analyze," Cooper commanded.
                 
-                "Interesting," TARS responded in his calm cadence. "The {user_prompt.split()[0]} phenomenon is creating 
-                a tesseract-like structure in 5-dimensional space. It appears to be... a message."
+                "Well, this is awkward," TARS responded. "The {user_prompt.split()[0]} phenomenon appears to be 
+                manipulating spacetime in ways that violate all known physics. On the bright side, 
+                I'm now 75% more amusing."
                 
-                Then the coordinates appeared - not on our screens, but burned into our retinas. The same coordinates 
-                from 50 years ago. The same coordinates that led us here.
+                Then the message appeared - not in any language, but as gravitational ripples in the fabric 
+                of spacetime itself. The coordinates pointed back to Earth. Back to Murph.
                 
                 **End of Recording**
                 """
@@ -171,7 +157,7 @@ with st.container():
 
                 # Download button
                 timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-                filename = f"interstellar_story_{timestamp}.txt"
+                filename = f"sci-fi_story_{timestamp}.txt"
                 b64 = base64.b64encode(story.encode()).decode()
                 href = f'<a href="data:file/txt;base64,{b64}" download="{filename}" class="save-button">💾 DOWNLOAD LOG ENTRY</a>'
                 st.markdown(href, unsafe_allow_html=True)
