@@ -62,7 +62,7 @@ st.markdown("""
 if 'story' not in st.session_state:
     st.session_state.story = ""
 if 'phase' not in st.session_state:
-    st.session_state.phase = 'start'  # can be 'start', 'generated', 'continue'
+    st.session_state.phase = 'start'
 
 # --- Header ---
 st.title("🚀 Cosmic Story Generator")
@@ -105,11 +105,21 @@ elif st.session_state.phase == 'generated':
             st.session_state.phase = 'start'
             st.session_state.story = ""
 
-# --- PHASE: Continue (input appears below story) ---
+# --- PHASE: Continue (append story with new user prompt) ---
 elif st.session_state.phase == 'continue':
     st.markdown(f"<div class='story-box'>{st.session_state.story.strip()}</div>", unsafe_allow_html=True)
 
     continuation = st.text_input("Continue the adventure:", placeholder="What happens next?")
     if st.button("Generate Story"):
         if continuation.strip():
-            st.session_state.story += f"\n\n{continuation.strip()}"
+            # Append the continuation in styled narrative format
+            st.session_state.story += f"""
+
+            *{datetime.now().strftime('%H:%M')} hrs, Deep Space*
+
+            {continuation.strip()}
+
+            "Captain," Vega whispered again, "it's not over. Something... or someone... is still out there."
+            """
+            # Stay in continue phase so user can keep adding
+            st.experimental_rerun()
