@@ -75,31 +75,31 @@ if 'story' not in st.session_state:
 if 'prompt' not in st.session_state:
     st.session_state.prompt = ""
 
-# Input prompt (same as before)
-prompt = st.text_input(
-    "Enter your sci-fi premise:", 
-    value=st.session_state.prompt,
-    placeholder="e.g. 'An AI awakens on a generation ship'"
-)
+# Input prompt (same as before, visible only if no story is generated yet)
+if not st.session_state.story:
+    prompt = st.text_input(
+        "Enter your sci-fi premise:", 
+        value=st.session_state.prompt,
+        placeholder="e.g. 'An AI awakens on a generation ship'"
+    )
+else:
+    prompt = st.session_state.prompt  # Retain the prompt if a story exists
 
 # Generate story button
-if st.button("Generate Story"):
-    if not prompt.strip():
-        st.warning("Please enter a sci-fi premise")
-    else:
-        with st.spinner('Generating...'):
-            # Generate a new story based on the prompt
-            st.session_state.story = f"""
-            **Stardate {datetime.now().strftime('%Y%m%d')}**
-            
-            It began when {prompt.lower().rstrip('.')}. The starship's sensors detected anomalous readings near the {prompt.split(' ')[0]} sector. 
-            
-            "Captain," Lt. Vega reported, "the quantum fluctuations are off the charts. It's like nothing we've seen before."
-            
-            Then everything changed. The last transmission before communications failed was a single repeating message: 
-            "The threshold has been crossed."
-            """
-            st.session_state.prompt = prompt  # Save the prompt to session state
+if st.button("Generate Story") and prompt.strip():
+    with st.spinner('Generating...'):
+        # Generate a new story based on the prompt
+        st.session_state.story = f"""
+        **Stardate {datetime.now().strftime('%Y%m%d')}**
+        
+        It began when {prompt.lower().rstrip('.')}. The starship's sensors detected anomalous readings near the {prompt.split(' ')[0]} sector. 
+        
+        "Captain," Lt. Vega reported, "the quantum fluctuations are off the charts. It's like nothing we've seen before."
+        
+        Then everything changed. The last transmission before communications failed was a single repeating message: 
+        "The threshold has been crossed."
+        """
+        st.session_state.prompt = prompt  # Save the prompt to session state
 
 # Display the story if it exists
 if st.session_state.story:
@@ -111,24 +111,20 @@ if st.session_state.story:
         f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
         unsafe_allow_html=True
     )
-
-    # Hide the buttons once story is generated
-    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # "Continue the story" button
     continue_button = st.button("Continue the story")
-    new_prompt_button = st.button("Generate another prompt")
 
     # Handle "Continue the story" button
     if continue_button:
-        # Move the input box below the generated text
-        st.text_input(
+        # Add an input field below the existing story
+        continuation = st.text_input(
             "Add to the story:",
-            key="continue_input"  # Ensures this is a separate input box
+            placeholder="Continue the adventure..."
         )
-        st.write("You can add more content to the current story here.")
-
-    # Handle "Generate another prompt" button
-    if new_prompt_button:
-        st.session_state.story = ""  # Reset the story
-        st.session_state.prompt = ""  # Reset the prompt
-        st.experimental_rerun()  # Refresh the page
+        
+        # When user provides a continuation, append it to the story
+        if continuation.strip():
+            st.session_state.story += f"\n\n{continuation.strip()}"
+            st.session_state.prompt = continuation.strip()  # Update the prompt for future continuation
 
