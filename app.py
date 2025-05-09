@@ -117,7 +117,11 @@ if st.session_state.story:
     
     with col1:
         if st.button("Continue the story"):
-            # If they continue, you can append more content or allow for more interaction with the model
+            # If they continue, move the input bar below the story
+            st.text_input(
+                "Add to the story:",
+                key="continue_input"  # This ensures it's a separate field
+            )
             st.write("You can add more content to the current story here.")
     
     with col2:
