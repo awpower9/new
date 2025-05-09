@@ -2,20 +2,14 @@ import streamlit as st
 from datetime import datetime
 import base64
 
-# --- Session State Setup ---
-if 'story' not in st.session_state:
-    st.session_state.story = ""
-if 'mode' not in st.session_state:
-    st.session_state.mode = 'input'  # 'input', 'post_gen', 'continue'
-
-# --- Page Configuration ---
+# Set page config
 st.set_page_config(
     page_title="Cosmic Story Generator",
     page_icon="🚀",
     layout="centered"
 )
 
-# --- Custom CSS for cosmic theme ---
+# --- Custom CSS ---
 st.markdown("""
     <style>
         .stApp {
@@ -50,90 +44,65 @@ st.markdown("""
             max-height: 400px;
             overflow-y: auto;
         }
-        .stTextInput>div>div>input {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            color: white !important;
-            padding: 8px !important;
-        }
-        .stTextInput>div>div>input:focus {
-            border-bottom: 2px solid #00f7ff !important;
-            background: rgba(0, 247, 255, 0.1) !important;
-        }
-        .stButton>button {
-            background: #00f7ff !important;
-            color: black !important;
-            border: none !important;
-            width: 100%;
-            margin-top: 1rem;
-        }
-        /* Scroll to the bottom effect */
-        .scroll-to-bottom {
-            height: 1px;
-        }
     </style>
 """, unsafe_allow_html=True)
 
-# --- Title & Subtitle ---
+# --- App Content ---
 st.title("🚀 Cosmic Story Generator")
 st.markdown("<p class='subtitle'>Create your own sci-fi adventure</p>", unsafe_allow_html=True)
 
-# --- Display Story So Far ---
-if st.session_state.story:
-    st.markdown(
-        f"<div class='story-box'>{st.session_state.story.replace('\n', '<br>')}</div>",
-        unsafe_allow_html=True
+# Initialize session state variables if they are not already present
+if "story" not in st.session_state:
+    st.session_state.story = ""
+if "user_prompt" not in st.session_state:
+    st.session_state.user_prompt = ""
+
+# Handle user input for prompt
+if st.session_state.story == "":  # Only show the input bar if no story is generated yet
+    prompt = st.text_input(
+        "Enter your sci-fi premise:", 
+        placeholder="e.g. 'An AI awakens on a generation ship'",
+        key="user_prompt"  # Ensures the input stays in session state
     )
 
-# --- Initial Prompt Input ---
-if st.session_state.mode == 'input':
-    prompt = st.text_input("Enter your sci-fi prompt:", key="initial_input")
     if st.button("Generate Story"):
         if not prompt.strip():
-            st.warning("Please enter a prompt!")
+            st.warning("Please enter a sci-fi premise")
         else:
-            new_story = f"""
-**Stardate {datetime.now().strftime('%Y%m%d')}**
+            with st.spinner('Generating...'):
+                story = f"""
+                **Stardate {datetime.now().strftime('%Y%m%d')}**
+                
+                It began when {prompt.lower().rstrip('.')}. The starship's sensors detected anomalous readings near the {prompt.split(' ')[0]} sector. 
+                
+                "Captain," Lt. Vega reported, "the quantum fluctuations are off the charts. It's like nothing we've seen before."
+                
+                Then everything changed. The last transmission before communications failed was a single repeating message: 
+                "The threshold has been crossed."
+                """
+                # Append generated story to the session state
+                st.session_state.story = story.strip()
 
-It began when {prompt.strip().lower()}. The signal arrived from deep space.
+                st.markdown(f"<div class='story-box'>{st.session_state.story}</div>", unsafe_allow_html=True)
 
-"Captain," Vega whispered, "this changes everything."
+                # Option to continue the story
+                if st.button("Continue Story"):
+                    st.session_state.story += "\n\nAnd then, the adventure continued..."
+                    st.markdown(f"<div class='story-box'>{st.session_state.story}</div>", unsafe_allow_html=True)
 
-Reality pulsed. The universe blinked.
-"""
-            st.session_state.story = new_story.strip()
-            st.session_state.mode = 'post_gen'
-
-# --- After First Generation: Offer to Continue ---
-elif st.session_state.mode == 'post_gen':
-    if st.button("Continue the story?"):
-        st.session_state.mode = 'continue'
-
-# --- Continue Prompt Input ---
-elif st.session_state.mode == 'continue':
-    continuation = st.text_input("What happens next?", key="continue_input")
-    if st.button("Generate Story"):
-        if not continuation.strip():
-            st.warning("Enter a continuation to keep going.")
-        else:
-            more_text = f"""
-**Stardate {datetime.now().strftime('%Y%m%d')}**
-
-Following the events, {continuation.strip().lower()} The void responded.
-
-A shimmering gate opened. The crew stepped through... unaware of what waited beyond.
-"""
-            st.session_state.story += f"\n\n{more_text.strip()}"
-            st.session_state.mode = 'post_gen'
-
-# --- Download Story Feature ---
-if st.session_state.story:
-    b64 = base64.b64encode(st.session_state.story.encode()).decode()
-    st.markdown(
-        f'<a href="data:file/txt;base64,{b64}" download="cosmic_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
-        unsafe_allow_html=True
-    )
-
-# --- Scroll to Bottom Placeholder ---
-st.markdown('<div class="scroll-to-bottom"></div>', unsafe_allow_html=True)
+                # Download option
+                b64 = base64.b64encode(st.session_state.story.encode()).decode()
+                st.markdown(
+                    f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
+                    unsafe_allow_html=True)
+else:
+    # Show the previously generated story and continue option
+    st.markdown(f"<div class='story-box'>{st.session_state.story}</div>", unsafe_allow_html=True)
+    if st.button("Continue Story"):
+        st.session_state.story += "\n\nAnd then, the adventure continued..."
+        st.markdown(f"<div class='story-box'>{st.session_state.story}</div>", unsafe_allow_html=True)
+        # Option to download updated story
+        b64 = base64.b64encode(st.session_state.story.encode()).decode()
+        st.markdown(
+            f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
+            unsafe_allow_html=True)
