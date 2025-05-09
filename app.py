@@ -1,29 +1,65 @@
-# ---- GENERATE STORY (Placeholder) ----
+import streamlit as st
+from PIL import Image
+
+# ---- PAGE CONFIG ----
+st.set_page_config(page_title="SciFi Story Generator", page_icon="🪐", layout="wide")
+
+# ---- HEADER ----
+st.markdown("""
+    <style>
+        body {
+            background-color: #0d0c1d;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .main-header {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+            color: #00ffe1;
+        }
+        .sub-header {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-top: -10px;
+            color: #9ae0f9;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("""<div class="main-header">🪐 SciFi Story Generator</div>""", unsafe_allow_html=True)
+st.markdown("""<div class="sub-header">Fuel your imagination with a cosmic tale</div>""", unsafe_allow_html=True)
+
+# ---- BACKGROUND IMAGE (planet-themed) ----
+st.image("https://images.unsplash.com/photo-1604668915841-f472c45d53c6?fit=crop&w=1920&q=80", use_column_width=True)
+
+# ---- PROMPT INPUT ----
 st.markdown("---")
-st.subheader("📖 Your Generated Story")
+st.subheader("💬 Enter a prompt to begin your story:")
+prompt = st.text_input("Prompt", placeholder="e.g. A cybernetic explorer awakens in the ruins of Mars...")
 
-generated_story = ""
+# ---- GENERATE STORY (simulate for now) ----
+if st.button("🚀 Generate Story"):
+    if not prompt:
+        st.warning("Please enter a prompt.")
+    else:
+        story = f"""
+**Generated Story**
 
-if st.button("Generate"):
-    st.success("✨ Story Generated!")
-    generated_story = f"""
-**Title:** *{genre} Chronicles: The Rise of {protagonist}*
+{prompt}
 
-In a world where stardust veins pulse through machines and forgotten ruins orbit black suns, **{protagonist}** awakens in a derelict satellite. Humanity’s last hope, equipped with a memory that isn’t theirs and a mission older than time.
-
-As cybernetic storms brew over the neon rings of Jupiter, whispers of rebellion echo through the void...
-
-*(The rest of your galactic tale continues...)*  
+In a universe where time folds upon itself and starships bleed memory into hyperspace, your journey begins. What follows is a tale shaped by cosmic fate...
 """
-    st.markdown(generated_story)
 
-    # Save story to downloadable text file
-    story_file = f"{protagonist}_scifi_story.txt"
-    st.download_button(
-        label="💾 Save Story as .txt",
-        data=generated_story,
-        file_name=story_file,
-        mime="text/plain"
-    )
-else:
-    st.warning("⬅️ Fill in the details and click Generate")
+        st.markdown("---")
+        st.subheader("📖 Your Story")
+        st.markdown(story)
+
+        # ---- DOWNLOAD STORY ----
+        st.download_button(
+            label="💾 Download Story as .txt",
+            data=story,
+            file_name="scifi_story.txt",
+            mime="text/plain"
+        )
