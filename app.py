@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime
+import base64
 
 # --- Session State Setup ---
 if 'story' not in st.session_state:
@@ -121,3 +122,11 @@ A shimmering gate opened. The crew stepped through... unaware of what waited bey
 """
             st.session_state.story += f"\n\n{more_text.strip()}"
             st.session_state.mode = 'post_gen'
+
+# --- Download Story Feature ---
+if st.session_state.story:
+    b64 = base64.b64encode(st.session_state.story.encode()).decode()
+    st.markdown(
+        f'<a href="data:file/txt;base64,{b64}" download="cosmic_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
+        unsafe_allow_html=True
+    )
