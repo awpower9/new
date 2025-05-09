@@ -1,65 +1,71 @@
 import streamlit as st
-from PIL import Image
+from datetime import datetime
+import base64
 
-# ---- PAGE CONFIG ----
-st.set_page_config(page_title="SciFi Story Generator", page_icon="🪐", layout="wide")
+# Set page config
+st.set_page_config(
+    page_title="SciFi Story Generator",
+    page_icon="🛸",
+    layout="centered"
+)
 
-# ---- HEADER ----
+# --- Custom CSS for a vibrant cosmic theme ---
 st.markdown("""
     <style>
         body {
-            background-color: #0d0c1d;
-            color: #e0e0e0;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: #0a0a23;
+            color: white;
         }
-        .main-header {
-            text-align: center;
-            font-size: 3rem;
+        .stApp {
+            background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        h1 {
+            color: #00ffff;
+            text-shadow: 0 0 15px #00ffff;
+        }
+        .story-box {
+            background: rgba(0,0,0,0.6);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            box-shadow: 0 0 25px #00f7ff;
+        }
+        .save-button {
+            background-color: #00f7ff;
+            color: black;
+            border: none;
+            padding: 0.5rem 1rem;
             font-weight: bold;
-            margin-bottom: 0.5em;
-            color: #00ffe1;
-        }
-        .sub-header {
-            text-align: center;
-            font-size: 1.5rem;
-            margin-top: -10px;
-            color: #9ae0f9;
+            border-radius: 5px;
+            margin-top: 1rem;
         }
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""<div class="main-header">🪐 SciFi Story Generator</div>""", unsafe_allow_html=True)
-st.markdown("""<div class="sub-header">Fuel your imagination with a cosmic tale</div>""", unsafe_allow_html=True)
+# --- Title and Prompt ---
+st.markdown("<h1 align='center'>🚀 SciFi Story Generator</h1>", unsafe_allow_html=True)
+st.markdown("<p align='center'>Fuel your imagination with a cosmic tale</p>", unsafe_allow_html=True)
 
-# ---- BACKGROUND IMAGE (planet-themed) ----
-st.image("https://images.unsplash.com/photo-1604668915841-f472c45d53c6?fit=crop&w=1920&q=80", use_column_width=True)
+# --- User Input ---
+user_prompt = st.text_input("Enter a sci-fi prompt:", "")
 
-# ---- PROMPT INPUT ----
-st.markdown("---")
-st.subheader("💬 Enter a prompt to begin your story:")
-prompt = st.text_input("Prompt", placeholder="e.g. A cybernetic explorer awakens in the ruins of Mars...")
-
-# ---- GENERATE STORY (simulate for now) ----
-if st.button("🚀 Generate Story"):
-    if not prompt:
+# --- Generate Story (Mock until model added) ---
+if st.button("Generate Story"):
+    if user_prompt.strip() == "":
         st.warning("Please enter a prompt.")
     else:
         story = f"""
-**Generated Story**
+        In a distant quadrant of the Andromeda galaxy, {user_prompt} became the catalyst for humanity’s greatest leap...
+        (✨ Your model-generated story would continue here ✨)
+        """
+        st.markdown(f"<div class='story-box'><pre>{story.strip()}</pre></div>", unsafe_allow_html=True)
 
-{prompt}
-
-In a universe where time folds upon itself and starships bleed memory into hyperspace, your journey begins. What follows is a tale shaped by cosmic fate...
-"""
-
-        st.markdown("---")
-        st.subheader("📖 Your Story")
-        st.markdown(story)
-
-        # ---- DOWNLOAD STORY ----
-        st.download_button(
-            label="💾 Download Story as .txt",
-            data=story,
-            file_name="scifi_story.txt",
-            mime="text/plain"
-        )
+        # --- Save story as text file ---
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        filename = f"sci_story_{timestamp}.txt"
+        b64 = base64.b64encode(story.encode()).decode()
+        href = f'<a href="data:file/txt;base64,{b64}" download="{filename}" class="save-button">💾 Save Story</a>'
+        st.markdown(href, unsafe_allow_html=True)
