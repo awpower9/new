@@ -68,6 +68,10 @@ st.markdown("""
             width: 100%;
             margin-top: 1rem;
         }
+        /* Scroll to the bottom effect */
+        .scroll-to-bottom {
+            height: 1px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -130,3 +134,6 @@ if st.session_state.story:
         f'<a href="data:file/txt;base64,{b64}" download="cosmic_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
         unsafe_allow_html=True
     )
+
+# --- Scroll to Bottom Placeholder ---
+st.markdown('<div class="scroll-to-bottom"></div>', unsafe_allow_html=True)
