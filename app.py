@@ -9,12 +9,11 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- Custom CSS with space background ---
+# --- Custom CSS ---
 st.markdown("""
     <style>
         .stApp {
-            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
-                        url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1471&auto=format&fit=crop');
+            background: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1471&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             color: white;
@@ -23,16 +22,13 @@ st.markdown("""
             max-width: 700px;
             padding: 2rem;
             margin: 0 auto;
-            background: rgba(0, 0, 30, 0.7);
+            background: rgba(0, 0, 0, 0.7);
             border-radius: 15px;
-            border: 1px solid #00f7ff;
-            box-shadow: 0 0 20px rgba(0, 247, 255, 0.3);
         }
         h1 {
             color: #00ffff;
-            text-shadow: 0 0 10px #00ffff;
-            font-family: 'Arial', sans-serif;
             text-align: center;
+            margin-bottom: 0.5rem;
         }
         .subtitle {
             color: #aaa;
@@ -40,84 +36,65 @@ st.markdown("""
             margin-bottom: 2rem;
         }
         .story-box {
-            background: rgba(0, 10, 20, 0.9);
+            background: rgba(0, 0, 0, 0.8);
             padding: 1.5rem;
             border-radius: 10px;
             margin: 1.5rem 0;
-            border-left: 3px solid #00f7ff;
             line-height: 1.7;
         }
+        /* Remove all input borders and styling */
         .stTextInput>div>div>input {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
             color: white !important;
-            background: rgba(0, 20, 40, 0.8) !important;
-            border: 1px solid #00f7ff !important;
-            border-radius: 5px !important;
-            padding: 10px !important;
+            padding: 8px !important;
+        }
+        /* Add subtle underline instead */
+        .stTextInput>div>div>input:focus {
+            border-bottom: 2px solid #00f7ff !important;
+            background: rgba(0, 247, 255, 0.1) !important;
         }
         .stButton>button {
             background: #00f7ff !important;
             color: black !important;
-            font-weight: bold !important;
-            margin: 1rem auto !important;
-            display: block !important;
-            transition: all 0.3s !important;
-        }
-        .stButton>button:hover {
-            transform: scale(1.05) !important;
-            box-shadow: 0 0 15px #00f7ff !important;
-        }
-        .save-btn {
-            background: #00f7ff;
-            color: black;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
+            border: none !important;
+            width: 100%;
             margin-top: 1rem;
-            font-weight: bold;
         }
     </style>
 """, unsafe_allow_html=True)
 
-# --- Main App ---
-with st.container():
-    st.markdown("<div class='main'>", unsafe_allow_html=True)
-    
-    st.title("🚀 Cosmic Story Generator")
-    st.markdown("<p class='subtitle'>Create your own sci-fi adventure</p>", unsafe_allow_html=True)
+# --- App Content ---
+st.title("🚀 Cosmic Story Generator")
+st.markdown("<p class='subtitle'>Create your own sci-fi adventure</p>", unsafe_allow_html=True)
 
-    prompt = st.text_input(
-        "Enter your sci-fi premise:",
-        placeholder="e.g. 'An AI awakens on a generation ship', 'First contact goes wrong'"
-    )
+prompt = st.text_input(
+    "Enter your sci-fi premise:", 
+    placeholder="e.g. 'An AI awakens on a generation ship'"
+)
 
-    if st.button("Generate Story"):
-        if not prompt.strip():
-            st.warning("Please enter a sci-fi premise")
-        else:
-            with st.spinner('Generating your cosmic tale...'):
-                time.sleep(1.5)  # Simulate processing
-                
-                story = f"""
-                **Stardate {datetime.now().strftime('%Y%m%d')} - Captain's Log**
-                
-                The incident began when {prompt.lower().rstrip('.')}. At first, the crew of the starship Event Horizon 
-                assumed it was routine, but when the quantum scanners detected {prompt.split()[0]} readings 
-                beyond known scientific parameters, we knew we'd encountered something extraordinary.
-
-                "Captain, you need to see this," Science Officer Chen reported, her voice tense. "The {prompt.split()[0]} 
-                phenomenon is creating a localized spacetime distortion. It's... it's like nothing in the databases."
-
-                Then the transmission came through - not on any frequency we could identify, but directly into our neural implants. 
-                The message was clear: "You have awakened the gateway. The test begins now."
-                """
-                
-                st.markdown(f"<div class='story-box'>{story.strip()}</div>", unsafe_allow_html=True)
-
-                # Download option
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                b64 = base64.b64encode(story.encode()).decode()
-                href = f'<a href="data:file/txt;base64,{b64}" download="cosmic_story_{timestamp}.txt" class="save-btn">💾 Download Story</a>'
-                st.markdown(href, unsafe_allow_html=True)
-    
-    st.markdown("</div>", unsafe_allow_html=True)
+if st.button("Generate Story"):
+    if not prompt.strip():
+        st.warning("Please enter a sci-fi premise")
+    else:
+        with st.spinner('Generating...'):
+            story = f"""
+            **Stardate {datetime.now().strftime('%Y%m%d')}**
+            
+            It began when {prompt.lower().rstrip('.')}. The starship's sensors detected anomalous readings near the {prompt.split(' ')[0]} sector. 
+            
+            "Captain," Lt. Vega reported, "the quantum fluctuations are off the charts. It's like nothing we've seen before."
+            
+            Then everything changed. The last transmission before communications failed was a single repeating message: 
+            "The threshold has been crossed."
+            """
+            
+            st.markdown(f"<div class='story-box'>{story.strip()}</div>", unsafe_allow_html=True)
+            
+            # Download option
+            b64 = base64.b64encode(story.encode()).decode()
+            st.markdown(
+                f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
+                unsafe_allow_html=True
+            )
