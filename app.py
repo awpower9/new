@@ -7,8 +7,6 @@ if 'story' not in st.session_state:
     st.session_state.story = ""
 if 'mode' not in st.session_state:
     st.session_state.mode = 'input'  # 'input', 'post_gen', 'continue'
-if 'generate_button_clicked' not in st.session_state:
-    st.session_state.generate_button_clicked = False
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -87,8 +85,7 @@ if st.session_state.story:
 # --- Initial Prompt Input ---
 if st.session_state.mode == 'input':
     prompt = st.text_input("Enter your sci-fi prompt:", key="initial_input")
-    if st.session_state.get("generate_button_clicked", False) == False and st.button("Generate Story"):
-        st.session_state.generate_button_clicked = True
+    if st.button("Generate Story"):
         if not prompt.strip():
             st.warning("Please enter a prompt!")
         else:
@@ -112,8 +109,7 @@ elif st.session_state.mode == 'post_gen':
 # --- Continue Prompt Input ---
 elif st.session_state.mode == 'continue':
     continuation = st.text_input("What happens next?", key="continue_input")
-    if st.session_state.get("generate_button_clicked", False) == False and st.button("Generate Story"):
-        st.session_state.generate_button_clicked = True
+    if st.button("Generate Story"):
         if not continuation.strip():
             st.warning("Enter a continuation to keep going.")
         else:
