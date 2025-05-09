@@ -13,7 +13,7 @@ st.set_page_config(
 st.markdown("""
     <style>
         .stApp {
-            background-image: url('https://unsplash.com/photos/an-artists-impression-of-a-black-hole-in-space-IHVCVi6zt9g');
+            background-image: url('https://www.pexels.com/photo/blue-universe-956981/');
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
