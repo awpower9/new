@@ -36,6 +36,8 @@ st.markdown("""
             border-radius: 10px;
             margin: 1.5rem 0;
             line-height: 1.7;
+            max-height: 400px;
+            overflow-y: auto;
         }
         .stTextInput>div>div>input {
             background: transparent !important;
@@ -70,22 +72,23 @@ st.markdown("<p class='subtitle'>Create your own sci-fi adventure</p>", unsafe_a
 
 # --- PHASE: Start ---
 if st.session_state.phase == 'start':
-    prompt = st.text_input("Enter your sci-fi premise:", placeholder="e.g. 'An AI awakens on a generation ship'")
-    if st.button("Generate Story") and prompt.strip():
-        st.session_state.story = f"""
-        **Stardate {datetime.now().strftime('%Y%m%d')}**
+    prompt = st.text_input("Enter your sci-fi premise:", placeholder="e.g. 'An AI awakens on a generation ship'", key='initial_input')
+    if st.button("Generate Story"):
+        if prompt.strip():
+            st.session_state.story = f"""
+            **Stardate {datetime.now().strftime('%Y%m%d')}**
 
-        It began when {prompt.lower().rstrip('.')}. The starship's sensors detected anomalous readings near the {prompt.split(' ')[0]} sector.
+            It began when {prompt.lower().rstrip('.')}. The starship's sensors detected anomalous readings near the {prompt.split(' ')[0]} sector.
 
-        "Captain," Lt. Vega reported, "the quantum fluctuations are off the charts. It's like nothing we've seen before."
+            "Captain," Lt. Vega reported, "the quantum fluctuations are off the charts. It's like nothing we've seen before."
 
-        Then everything changed. The last transmission before communications failed was a single repeating message: 
-        "The threshold has been crossed."
-        """
-        st.session_state.phase = 'generated'
+            Then everything changed. The last transmission before communications failed was a single repeating message: 
+            "The threshold has been crossed."
+            """
+            st.session_state.phase = 'generated'
 
-# --- PHASE: Generated (show story, ask to continue) ---
-elif st.session_state.phase == 'generated':
+# --- PHASE: Generated ---
+if st.session_state.phase == 'generated':
     st.markdown(f"<div class='story-box'>{st.session_state.story.strip()}</div>", unsafe_allow_html=True)
 
     # Download option
@@ -105,15 +108,14 @@ elif st.session_state.phase == 'generated':
             st.session_state.phase = 'start'
             st.session_state.story = ""
 
-# --- PHASE: Continue (append story with new user prompt) ---
-elif st.session_state.phase == 'continue':
+# --- PHASE: Continue (append to story) ---
+if st.session_state.phase == 'continue':
     st.markdown(f"<div class='story-box'>{st.session_state.story.strip()}</div>", unsafe_allow_html=True)
 
-    continuation = st.text_input("Continue the adventure:", placeholder="What happens next?")
+    continuation = st.text_input("Continue the adventure:", placeholder="What happens next?", key='cont_input')
     if st.button("Generate Story"):
         if continuation.strip():
-            # Append the continuation in styled narrative format
-            st.session_state.story += f"""
+            new_chunk = f"""
 
             *{datetime.now().strftime('%H:%M')} hrs, Deep Space*
 
@@ -121,5 +123,4 @@ elif st.session_state.phase == 'continue':
 
             "Captain," Vega whispered again, "it's not over. Something... or someone... is still out there."
             """
-            # Stay in continue phase so user can keep adding
-            st.experimental_rerun()
+            st.session_state.story += new_chunk
