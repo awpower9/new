@@ -9,11 +9,11 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- Custom CSS with proper space background ---
+# --- Custom CSS with space background ---
 st.markdown("""
     <style>
         .stApp {
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
                         url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1471&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
@@ -45,11 +45,14 @@ st.markdown("""
             border-radius: 10px;
             margin: 1.5rem 0;
             border-left: 3px solid #00f7ff;
+            line-height: 1.7;
         }
         .stTextInput>div>div>input {
             color: white !important;
             background: rgba(0, 20, 40, 0.8) !important;
             border: 1px solid #00f7ff !important;
+            border-radius: 5px !important;
+            padding: 10px !important;
         }
         .stButton>button {
             background: #00f7ff !important;
@@ -57,6 +60,11 @@ st.markdown("""
             font-weight: bold !important;
             margin: 1rem auto !important;
             display: block !important;
+            transition: all 0.3s !important;
+        }
+        .stButton>button:hover {
+            transform: scale(1.05) !important;
+            box-shadow: 0 0 15px #00f7ff !important;
         }
         .save-btn {
             background: #00f7ff;
@@ -71,7 +79,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- App Content ---
+# --- Main App ---
 with st.container():
     st.markdown("<div class='main'>", unsafe_allow_html=True)
     
@@ -88,9 +96,7 @@ with st.container():
             st.warning("Please enter a sci-fi premise")
         else:
             with st.spinner('Generating your cosmic tale...'):
-                # Simulate processing delay
-                import time
-                time.sleep(1.5)
+                time.sleep(1.5)  # Simulate processing
                 
                 story = f"""
                 **Stardate {datetime.now().strftime('%Y%m%d')} - Captain's Log**
@@ -98,23 +104,20 @@ with st.container():
                 The incident began when {prompt.lower().rstrip('.')}. At first, the crew of the starship Event Horizon 
                 assumed it was routine, but when the quantum scanners detected {prompt.split()[0]} readings 
                 beyond known scientific parameters, we knew we'd encountered something extraordinary.
-                
+
                 "Captain, you need to see this," Science Officer Chen reported, her voice tense. "The {prompt.split()[0]} 
                 phenomenon is creating a localized spacetime distortion. It's... it's like nothing in the databases."
-                
+
                 Then the transmission came through - not on any frequency we could identify, but directly into our neural implants. 
                 The message was clear: "You have awakened the gateway. The test begins now."
-                
-                [End of log entry - continue story?]
                 """
                 
                 st.markdown(f"<div class='story-box'>{story.strip()}</div>", unsafe_allow_html=True)
 
                 # Download option
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                filename = f"scifi_story_{timestamp}.txt"
                 b64 = base64.b64encode(story.encode()).decode()
-                href = f'<a href="data:file/txt;base64,{b64}" download="{filename}" class="save-btn">💾 Download Story</a>'
+                href = f'<a href="data:file/txt;base64,{b64}" download="cosmic_story_{timestamp}.txt" class="save-btn">💾 Download Story</a>'
                 st.markdown(href, unsafe_allow_html=True)
     
     st.markdown("</div>", unsafe_allow_html=True)
