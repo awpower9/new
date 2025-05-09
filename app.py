@@ -114,16 +114,15 @@ if st.session_state.story:
         f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
         unsafe_allow_html=True
     )
-    
-    # Continue the story button (appears after the first story is generated)
+
+    # Show the continuation input and button after the story is generated
     continuation = st.text_input("Add to the story:", placeholder="Continue the adventure...")
     
-    # When user provides a continuation, append it to the story
     if continuation.strip():
         st.session_state.story += f"\n\n{continuation.strip()}"
         st.session_state.prompt = continuation.strip()  # Update the prompt for future continuation
 
-    # "Generate New Story" button (replaces "Generate Story" and "Continue the Story" after the first generation)
+    # After generating the first story, only show "Generate New Story" button
     if st.session_state.generated:
         generate_new_button = st.button("Generate New Story")
         if generate_new_button:
