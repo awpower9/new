@@ -115,23 +115,15 @@ if st.session_state.story:
         unsafe_allow_html=True
     )
     
-    # "Continue the story" button
-    continue_button = st.button("Continue the story")
+    # Continue the story button (appears after the first story is generated)
+    continuation = st.text_input("Add to the story:", placeholder="Continue the adventure...")
+    
+    # When user provides a continuation, append it to the story
+    if continuation.strip():
+        st.session_state.story += f"\n\n{continuation.strip()}"
+        st.session_state.prompt = continuation.strip()  # Update the prompt for future continuation
 
-    # Handle "Continue the story" button
-    if continue_button:
-        # Add an input field below the existing story
-        continuation = st.text_input(
-            "Add to the story:",
-            placeholder="Continue the adventure..."
-        )
-        
-        # When user provides a continuation, append it to the story
-        if continuation.strip():
-            st.session_state.story += f"\n\n{continuation.strip()}"
-            st.session_state.prompt = continuation.strip()  # Update the prompt for future continuation
-
-    # "Generate New Story" button (replace "Continue" with "Generate New Story" after first generation)
+    # "Generate New Story" button (replaces "Generate Story" and "Continue the Story" after the first generation)
     if st.session_state.generated:
         generate_new_button = st.button("Generate New Story")
         if generate_new_button:
