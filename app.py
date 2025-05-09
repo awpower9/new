@@ -75,7 +75,7 @@ if 'story' not in st.session_state:
 if 'prompt' not in st.session_state:
     st.session_state.prompt = ""
 
-# Input prompt
+# Input prompt (same as before)
 prompt = st.text_input(
     "Enter your sci-fi premise:", 
     value=st.session_state.prompt,
@@ -111,22 +111,24 @@ if st.session_state.story:
         f'<a href="data:file/txt;base64,{b64}" download="scifi_story.txt" style="color:#00f7ff;">⬇️ Download Story</a>',
         unsafe_allow_html=True
     )
-    
-    # Show the Continue and New buttons after the story is generated
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
-        if st.button("Continue the story"):
-            # If they continue, move the input bar below the story
-            st.text_input(
-                "Add to the story:",
-                key="continue_input"  # This ensures it's a separate field
-            )
-            st.write("You can add more content to the current story here.")
-    
-    with col2:
-        if st.button("Generate another prompt"):
-            # Reset everything and start fresh
-            st.session_state.story = ""
-            st.session_state.prompt = ""
-            st.experimental_rerun()
+
+    # Hide the buttons once story is generated
+    st.markdown("<br>", unsafe_allow_html=True)
+    continue_button = st.button("Continue the story")
+    new_prompt_button = st.button("Generate another prompt")
+
+    # Handle "Continue the story" button
+    if continue_button:
+        # Move the input box below the generated text
+        st.text_input(
+            "Add to the story:",
+            key="continue_input"  # Ensures this is a separate input box
+        )
+        st.write("You can add more content to the current story here.")
+
+    # Handle "Generate another prompt" button
+    if new_prompt_button:
+        st.session_state.story = ""  # Reset the story
+        st.session_state.prompt = ""  # Reset the prompt
+        st.experimental_rerun()  # Refresh the page
+
