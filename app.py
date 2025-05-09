@@ -12,22 +12,19 @@ st.set_page_config(
 # --- Custom CSS for a vibrant cosmic theme ---
 st.markdown("""
     <style>
-        body {
-            background-color: #0a0a23;
-            color: white;
-        }
         .stApp {
             background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d');
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
+            color: white;
         }
         h1 {
             color: #00ffff;
             text-shadow: 0 0 15px #00ffff;
         }
         .story-box {
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.6);
             padding: 1.5rem;
             border-radius: 10px;
             margin-top: 1rem;
@@ -41,6 +38,7 @@ st.markdown("""
             font-weight: bold;
             border-radius: 5px;
             margin-top: 1rem;
+            text-decoration: none;
         }
     </style>
 """, unsafe_allow_html=True)
